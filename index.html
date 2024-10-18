@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Registration Redirect</title>
+    <script>
+        fetch('redirect-config.json')
+            .then(response => response.json())
+            .then(data => {
+                window.location.href = data.redirectUrl;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.body.innerHTML = 'Error: Unable to fetch the current form URL.';
+            });
+    </script>
+</head>
+<body>
+    <p>Redirecting to the current event registration form...</p>
+</body>
+</html>
