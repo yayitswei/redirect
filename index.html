@@ -3,12 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>Event Registration Redirect</title>
     <script>
-        fetch('redirect-config.json')
-            .then(response => response.json())
-            .then(data => {
-                window.location.href = data.redirectUrl;
+        function fetchRedirectUrl() {
+            return fetch('redirect-config.json?nocache=' + new Date().getTime())
+                .then(response => response.json())
+                .then(data => data.redirectUrl);
+        }
+
+        fetchRedirectUrl()
+            .then(url => {
+                window.location.href = url;
             })
             .catch(error => {
                 console.error('Error:', error);
