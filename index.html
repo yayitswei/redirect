@@ -9,22 +9,44 @@
     <title>Event Registration Redirect</title>
     <script>
         function fetchRedirectUrl() {
-            return fetch('redirect-config.json?nocache=' + new Date().getTime())
-                .then(response => response.json())
-                .then(data => data.redirectUrl);
+            return fetch('redirect-config.json?v=' + Date.now(), {
+                method: 'GET',
+                headers: {
+                    'Cache-Control': 'no-cache',
+                    'Pragma': 'no-cache',
+                    'Expires': '0',
+                }
+            })
+            .then(response => response.json())
+            .then(data => data.redirectUrl);
         }
 
-        fetchRedirectUrl()
-            .then(url => {
-                window.location.href = url;
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                document.body.innerHTML = 'Error: Unable to fetch the current form URL.';
-            });
+        function redirect() {
+            fetchRedirectUrl()
+                .then(url => {
+                    console.log("Redirecting to:", url);
+                    window.location.href = url;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.body.innerHTML = 'Error: Unable to fetch the current form URL. Please try refreshing the page.';
+                });
+        }
+
+        // Attempt to redirect immediately
+        redirect();
+
+        // If we're still here after 1 second, try again
+        setTimeout(function() {
+            if (document.readyState === "complete") {
+                console.log("Page load complete, but redirect didn't happen. Trying again...");
+                redirect();
+            }
+        }, 1000);
     </script>
 </head>
 <body>
     <p>Redirecting to the current event registration form...</p>
+    <p>If you are not redirected automatically, please <a href="#" onclick="redirect(); return false;">click here</a>.</p>
 </body>
 </html>
